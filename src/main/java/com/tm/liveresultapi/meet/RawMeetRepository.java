@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Repository
 @CrossOrigin(origins="*")
-@RepositoryRestResource(exported=false, itemResourceRel="meet", collectionResourceRel="meets")
+@RepositoryRestResource(exported=false)
 public interface RawMeetRepository extends DatastoreRepository<RawMeet, String> {
 
 }

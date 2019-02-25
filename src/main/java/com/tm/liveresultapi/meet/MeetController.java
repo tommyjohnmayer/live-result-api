@@ -11,31 +11,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins="*")
-@RequestMapping(path="/meets")
 @RepositoryRestController
-@RestController
 public class MeetController {
 	
 	@Autowired
 	RawMeetRepository repo;
 
-    private PagedResourcesAssembler<RawMeet> pagedAssembler;
+    private PagedResourcesAssembler<Meet> pagedAssembler;
 
     @Autowired
-    public MeetController(PagedResourcesAssembler<RawMeet> pagedAssembler) {
+    public MeetController(PagedResourcesAssembler<Meet> pagedAssembler) {
         this.pagedAssembler = pagedAssembler;
     }
 
-    private Page<RawMeet> getMeets(Pageable pageRequest){
-        return repo.findAll(pageRequest);
+    private Page<Meet> getMeets(Pageable pageRequest){
+    	Page<RawMeet> meets = repo.findAll(pageRequest);
+        return meets.map(x -> new Meet(x));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	@GetMapping(produces = "application/hal+json")
+	@GetMapping(path="/meets", produces = "application/hal+json")
     public ResponseEntity<Page<RawMeet>> getMeetsHal(Pageable pageRequest, PersistentEntityResourceAssembler assembler){
         return new ResponseEntity(pagedAssembler.toResource(getMeets(pageRequest), (ResourceAssembler) assembler), HttpStatus.OK);
     }
